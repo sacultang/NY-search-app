@@ -4,13 +4,12 @@ import styled from "styled-components";
 import useSearchNews from "../pages/home/hooks/useSearchNews";
 const SearchInput = () => {
   const inputRef = useRef<HTMLInputElement>(null);
-  const { data } = useSearchNews(
-    inputRef.current ? inputRef.current.value : ""
-  );
+
   const searchNewsSubmit = (e: FormEvent) => {
     e.preventDefault();
-    if (inputRef.current) console.log(inputRef.current.value);
+    if (!inputRef.current!.value) return;
   };
+  const {} = useSearchNews(inputRef.current ? inputRef.current.value : "");
   return (
     <InputForm onSubmit={searchNewsSubmit}>
       <InputField ref={inputRef} />
