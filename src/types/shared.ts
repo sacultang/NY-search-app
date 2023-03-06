@@ -1,8 +1,10 @@
 export interface Docs {
+  response: Response;
+}
+interface Response {
   docs: Doc[];
   meta: Meta;
 }
-
 export interface Doc {
   abstract: string;
   web_url: string;

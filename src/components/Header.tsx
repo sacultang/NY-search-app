@@ -1,14 +1,11 @@
 import React from "react";
 import NavBar from "./NavBar";
-import SearchInput from "./SearchInput";
 import styled from "styled-components";
-import { InputRef } from "../types/shared";
 
-const Header = ({ inputRef }: InputRef) => {
+const Header = () => {
   return (
     <HeaderBox>
       <NavBar />
-      <SearchInput inputRef={inputRef} />
     </HeaderBox>
   );
 };

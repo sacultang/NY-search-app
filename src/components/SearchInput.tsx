@@ -1,18 +1,21 @@
 import { useQuery } from "@tanstack/react-query";
 import React, { FormEvent, useRef } from "react";
 import styled from "styled-components";
-import useSearchNews from "../pages/home/hooks/useSearchNews";
-import { InputRef } from "../types/shared";
 
-const SearchInput = ({ inputRef }: InputRef) => {
-  const searchNewsSubmit = (e: FormEvent) => {
+interface IProps {
+  setKeyword: React.Dispatch<React.SetStateAction<string>>;
+}
+
+const SearchInput = ({ setKeyword }: IProps) => {
+  const searchNewsSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!inputRef.current!.value) return;
+    const searchKeyword = new FormData(e.currentTarget);
+    setKeyword(searchKeyword.get("searchInput") as string);
   };
-  const {} = useSearchNews(inputRef.current ? inputRef.current.value : "");
+
   return (
     <InputForm onSubmit={searchNewsSubmit}>
-      <InputField ref={inputRef} />
+      <InputField type="text" name="searchInput" />
       <SearchBtn>Search</SearchBtn>
     </InputForm>
   );
