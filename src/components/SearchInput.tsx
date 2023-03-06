@@ -2,9 +2,9 @@ import { useQuery } from "@tanstack/react-query";
 import React, { FormEvent, useRef } from "react";
 import styled from "styled-components";
 import useSearchNews from "../pages/home/hooks/useSearchNews";
-const SearchInput = () => {
-  const inputRef = useRef<HTMLInputElement>(null);
+import { InputRef } from "../types/shared";
 
+const SearchInput = ({ inputRef }: InputRef) => {
   const searchNewsSubmit = (e: FormEvent) => {
     e.preventDefault();
     if (!inputRef.current!.value) return;
