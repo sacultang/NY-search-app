@@ -3,16 +3,16 @@ import SearchInput from "../../components/SearchInput";
 import useSearchNews from "./hooks/useSearchNews";
 import NewsCard from "../../components/NewsCard";
 import styled from "styled-components";
+import Loader from "../../components/Loader";
 const Home = () => {
-  const { data, isLoading, setKeyword, keyword, fetchNextPage } =
+  const { data, setKeyword, keyword, fetchNextPage, isFetching } =
     useSearchNews();
   const bottomRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    console.log(keyword);
     const bottomWindow = new IntersectionObserver(
       (entries) => {
-        if (entries[0].isIntersecting && keyword) {
+        if (entries[0].isIntersecting && !!keyword) {
           fetchNextPage();
         }
       },
@@ -25,17 +25,16 @@ const Home = () => {
     return results || null;
   }, [data]);
 
-  if (isLoading) return <div>Loading...</div>;
   return (
     <Container>
       <SearchInput setKeyword={setKeyword} />
-
       <CardContainer>
         {searchResults &&
           searchResults.map((item) => (
             <NewsCard key={item._id} newsData={item} />
           ))}
       </CardContainer>
+      {isFetching ? <Loader /> : null}
       <ContainerBottom ref={bottomRef} />
     </Container>
   );
@@ -55,9 +54,11 @@ const CardContainer = styled.div`
   grid-template-columns: repeat(auto-fill, minmax(500px, 1fr));
   grid-auto-flow: row;
   grid-gap: 10px;
+  max-width: 1100px;
 `;
 
 const ContainerBottom = styled.div`
   height: 30px;
   width: 100%;
+  margin-top: 30px;
 `;

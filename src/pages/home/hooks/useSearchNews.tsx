@@ -18,20 +18,24 @@ const getSearchData = async (query: string, page: number): Promise<Docs> => {
 };
 const useSearchNews = () => {
   const [keyword, setKeyword] = useState<string>("");
-  const { data, isLoading, hasNextPage, fetchNextPage } = useInfiniteQuery(
-    [keyword],
-    ({ pageParam = 1 }) => getSearchData(keyword, pageParam),
-    {
-      getNextPageParam: (response, currentPages) => {
-        console.log(currentPages.length);
-        const totalResults = response.response.meta.hits;
-        const pageLength = Math.ceil(totalResults / 10);
 
-        currentPages.length < pageLength ? currentPages.length + 1 : undefined;
-      },
-      enabled: !!keyword,
-    }
-  );
+  const { data, isLoading, hasNextPage, fetchNextPage, isFetching } =
+    useInfiniteQuery(
+      [keyword],
+      ({ pageParam = 1 }) => getSearchData(keyword, pageParam),
+      {
+        getNextPageParam: (response, currentPages) => {
+          const totalResults = response.response.meta.hits;
+          const pageLength = Math.ceil(totalResults / 10);
+          if (currentPages.length < pageLength) {
+            return currentPages.length + 1;
+          } else {
+            return undefined;
+          }
+        },
+        enabled: !!keyword,
+      }
+    );
 
   return {
     data,
@@ -40,6 +44,7 @@ const useSearchNews = () => {
     keyword,
     fetchNextPage,
     isLoading,
+    isFetching,
   };
 };
 
