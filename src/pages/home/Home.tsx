@@ -30,8 +30,8 @@ const Home = () => {
       <SearchInput setKeyword={setKeyword} />
       <CardContainer>
         {searchResults &&
-          searchResults.map((item) => (
-            <NewsCard key={item._id} newsData={item} />
+          searchResults.map((news) => (
+            <NewsCard key={news._id} newsData={news} />
           ))}
       </CardContainer>
       {isFetching ? <Loader /> : null}
