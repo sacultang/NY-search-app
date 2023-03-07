@@ -4,7 +4,7 @@ import useSearchNews from "./hooks/useSearchNews";
 import NewsCard from "../../components/NewsCard";
 import styled from "styled-components";
 const Home = () => {
-  const { data, isFetching, isLoading, setKeyword, keyword, fetchNextPage } =
+  const { data, isLoading, setKeyword, keyword, fetchNextPage } =
     useSearchNews();
   const bottomRef = useRef<HTMLDivElement>(null);
 
@@ -13,8 +13,6 @@ const Home = () => {
     const bottomWindow = new IntersectionObserver(
       (entries) => {
         if (entries[0].isIntersecting && keyword) {
-          console.log(keyword);
-          console.log("last");
           fetchNextPage();
         }
       },
