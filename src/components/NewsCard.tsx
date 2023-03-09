@@ -1,54 +1,30 @@
-import React, { useState } from "react";
+import React, { useEffect, useCallback } from "react";
 import { Doc } from "../types/shared";
 import styled from "styled-components";
-import { setStoredClip, getStoredClip } from "../util/storageUtils";
+import { setStoredClip } from "../util/storageUtils";
 import { checkClip, filterClip } from "../util/checkClip";
-import useClipNews from "../pages/hooks/useClipNews";
+import { useClip } from "../context/useClipContext";
 interface IProps {
   newsData: Doc;
 }
 const IMAGE_URL = "https://www.nytimes.com/";
 const NewsCard = ({ newsData }: IProps) => {
-  const { clipNews, setClipNews } = useClipNews();
+  const { clipNews, setClipNews } = useClip();
 
-  const addClip = (news: Doc) => {
-    if (checkClip(clipNews, news._id)) {
-      const filterClipArr = clipNews?.filter(
-        (clipId) => clipId._id !== newsData._id
-      );
-      console.log("check");
-      console.log(clipNews);
-      setClipNews(filterClipArr);
-      // setStoredClip(filterClipArr);
-    } else {
-      console.log("no check");
-      console.log(clipNews);
-      // setStoredClip([...clipNews, news]);
-      setClipNews((prev) => [...prev, news]);
-    }
+  const addClip = useCallback(
+    (news: Doc) => {
+      let updatedClipNews: Doc[] = [];
+      if (checkClip(clipNews, news._id)) {
+        updatedClipNews = filterClip(clipNews, news._id);
+      } else {
+        updatedClipNews = [...clipNews, news];
+      }
 
-    // console.log(clippedNews);
-    // if (clippedNews === undefined) {
-    //   setStoredClip([news]);
-    //   // if (clippedNews.length > 0 && checkClip(clippedNews, newsData._id)) {
-    //   //   const filterClipArr = clippedNews?.filter(
-    //   //     (clipId) => clipId._id !== newsData._id
-    //   //   );
-    //   //   console.log("check");
-    //   //   setStoredClip(filterClipArr);
-    //   //   setClippedNews!(filterClipArr);
-    //   // } else {
-    //   //   console.log("no check");
-    //   //   setStoredClip([news]);
-    //   // }
-    // } else if (checkClip(clippedNews, newsData._id)) {
-    //   const filterClipArr = clippedNews?.filter(
-    //     (clipId) => clipId._id !== newsData._id
-    //   );
-    //   setStoredClip(filterClipArr);
-    //   setClippedNews!(filterClipArr);
-    // }
-  };
+      setClipNews && setClipNews(updatedClipNews);
+      setStoredClip(updatedClipNews);
+    },
+    [clipNews, setClipNews, setStoredClip]
+  );
   return (
     <CardBox>
       <h1>{newsData.headline.main}</h1>

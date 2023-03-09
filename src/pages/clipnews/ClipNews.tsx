@@ -1,15 +1,16 @@
 import React from "react";
-
 import NewsCard from "../../components/NewsCard";
 import styled from "styled-components";
-import useClipNews from "../hooks/useClipNews";
+import { useClip } from "../../context/useClipContext";
 const ClipNews = () => {
-  const { clipNews } = useClipNews();
+  const { clipNews } = useClip();
+
   return (
     <Container>
       <CardContainer>
-        {clipNews.length > 0 &&
-          clipNews?.map((news) => <NewsCard key={news._id} newsData={news} />)}
+        {clipNews.length > 0
+          ? clipNews?.map((news) => <NewsCard key={news._id} newsData={news} />)
+          : null}
       </CardContainer>
     </Container>
   );
