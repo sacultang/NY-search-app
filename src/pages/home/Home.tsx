@@ -6,11 +6,12 @@ import styled from "styled-components";
 import Loader from "../../components/Loader";
 import Skeleton from "../../components/Skeleton";
 const Home = () => {
-  const { data, setKeyword, keyword, fetchNextPage, isFetching } =
+  const { data, setKeyword, keyword, fetchNextPage, isFetching, isLoading } =
     useSearchNews();
   const bottomRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    if (isLoading) return;
     const bottomWindow = new IntersectionObserver(
       (entries) => {
         if (entries[0].isIntersecting && !!keyword) {
@@ -20,7 +21,7 @@ const Home = () => {
       { threshold: 0.7 }
     );
     if (bottomRef.current) bottomWindow.observe(bottomRef.current);
-  }, [keyword, fetchNextPage]);
+  }, [keyword, fetchNextPage, isLoading]);
   const searchResults = useMemo(() => {
     const results = data?.pages.flatMap((page) => page.response.docs);
     return results || null;

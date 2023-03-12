@@ -38,13 +38,13 @@ const CardSkeleton = styled.div`
   align-items: flex-start;
   animation: ${SkeletonAnimation} 1.8s infinite ease-in-out;
 `;
-const HSkeleton = styled.div`
+export const HSkeleton = styled.div`
   width: 100%;
   height: 30px;
   margin: 10px 0;
   animation: ${SkeletonAnimation} 1.8s infinite ease-in-out;
 `;
-const PSkeleton = styled.div`
+export const PSkeleton = styled.div`
   width: 100%;
   height: 30px;
   margin: 10px 0;

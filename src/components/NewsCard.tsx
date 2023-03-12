@@ -28,6 +28,10 @@ const NewsCard = ({ newsData }: IProps) => {
     },
     [clipNews, setClipNews]
   );
+  const handleImgError = (e: React.SyntheticEvent<HTMLImageElement>) => {
+    const imgElement = e.target as HTMLImageElement;
+    imgElement.src = defaultImg;
+  };
   return (
     <CardBox>
       <h1>{newsData.headline.main}</h1>
@@ -45,6 +49,7 @@ const NewsCard = ({ newsData }: IProps) => {
               : "Default Image"
           }
           onLoad={onLoad}
+          onError={handleImgError}
         />
         {!loaded && <ImgSkeleton />}
       </ImgBox>
