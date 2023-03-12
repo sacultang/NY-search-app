@@ -4,6 +4,7 @@ import useSearchNews from "./hooks/useSearchNews";
 import NewsCard from "../../components/NewsCard";
 import styled from "styled-components";
 import Loader from "../../components/Loader";
+import Skeleton from "../../components/Skeleton";
 const Home = () => {
   const { data, setKeyword, keyword, fetchNextPage, isFetching } =
     useSearchNews();
@@ -19,7 +20,7 @@ const Home = () => {
       { threshold: 0.7 }
     );
     if (bottomRef.current) bottomWindow.observe(bottomRef.current);
-  }, [keyword]);
+  }, [keyword, fetchNextPage]);
   const searchResults = useMemo(() => {
     const results = data?.pages.flatMap((page) => page.response.docs);
     return results || null;
@@ -31,7 +32,9 @@ const Home = () => {
       <CardContainer>
         {searchResults &&
           searchResults.map((news) => (
-            <NewsCard key={news._id} newsData={news} />
+            <React.Fragment key={news._id}>
+              {isFetching ? <Skeleton /> : <NewsCard newsData={news} />}
+            </React.Fragment>
           ))}
       </CardContainer>
       {isFetching ? <Loader /> : null}

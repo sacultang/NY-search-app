@@ -1,16 +1,19 @@
-import React, { useEffect, useCallback } from "react";
+import React, { useCallback, useState } from "react";
 import { Doc } from "../types/shared";
 import styled from "styled-components";
 import { setStoredClip } from "../util/storageUtils";
 import { checkClip, filterClip } from "../util/checkClip";
 import { useClip } from "../context/useClipContext";
+import defaultImg from "../assets/react.svg";
+import { ImgSkeleton } from "./Skeleton";
 interface IProps {
   newsData: Doc;
 }
 const IMAGE_URL = "https://www.nytimes.com/";
 const NewsCard = ({ newsData }: IProps) => {
+  const [loaded, setLoaded] = useState(false);
   const { clipNews, setClipNews } = useClip();
-
+  const onLoad = () => setLoaded(true);
   const addClip = useCallback(
     (news: Doc) => {
       let updatedClipNews: Doc[] = [];
@@ -20,10 +23,10 @@ const NewsCard = ({ newsData }: IProps) => {
         updatedClipNews = [...clipNews, news];
       }
 
-      setClipNews && setClipNews(updatedClipNews);
+      setClipNews(updatedClipNews);
       setStoredClip(updatedClipNews);
     },
-    [clipNews, setClipNews, setStoredClip]
+    [clipNews, setClipNews]
   );
   return (
     <CardBox>
@@ -31,9 +34,19 @@ const NewsCard = ({ newsData }: IProps) => {
       <p>{newsData.abstract}</p>
       <ImgBox>
         <img
-          src={IMAGE_URL + newsData.multimedia[0].url}
-          alt={newsData.multimedia[0].crop_name}
+          src={
+            newsData.multimedia.length > 0
+              ? IMAGE_URL + newsData.multimedia[0].url
+              : defaultImg
+          }
+          alt={
+            newsData.multimedia.length > 0
+              ? newsData.multimedia[0].crop_name
+              : "Default Image"
+          }
+          onLoad={onLoad}
         />
+        {!loaded && <ImgSkeleton />}
       </ImgBox>
       <ClipBox>
         <ClipBtn onClick={() => addClip(newsData)}>

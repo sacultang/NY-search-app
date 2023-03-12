@@ -2,7 +2,7 @@ import { Doc } from "../types/shared";
 const LOCALSTORAGE_KEY = "clip_news";
 export type newsArr = Doc[] | [];
 
-export const getStoredClip = (): newsArr => {
+export const getStoredClip = (): Doc[] | [] => {
   const storedClip = localStorage.getItem(LOCALSTORAGE_KEY);
   return storedClip ? JSON.parse(storedClip) : [];
 };
