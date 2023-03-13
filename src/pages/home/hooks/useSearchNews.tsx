@@ -1,5 +1,5 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { Axios } from "../../../axiosInstance";
 import { Docs } from "../../../types/shared";
@@ -16,12 +16,11 @@ const getSearchData = async (query: string, page: number): Promise<Docs> => {
 
   return data;
 };
-const useSearchNews = () => {
-  const [keyword, setKeyword] = useState<string>("");
 
+const useSearchNews = (keyword: string) => {
   const { data, isLoading, hasNextPage, fetchNextPage, isFetching } =
     useInfiniteQuery(
-      [keyword],
+      ["search", keyword],
       ({ pageParam = 1 }) => getSearchData(keyword, pageParam),
       {
         getNextPageParam: (response, currentPages) => {
@@ -40,8 +39,6 @@ const useSearchNews = () => {
   return {
     data,
     hasNextPage,
-    setKeyword,
-    keyword,
     fetchNextPage,
     isLoading,
     isFetching,

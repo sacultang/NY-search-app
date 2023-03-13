@@ -1,30 +1,34 @@
-import React, { useRef, useEffect, useMemo } from "react";
+import React, { useRef, useEffect, useMemo, useState } from "react";
 import SearchInput from "../../components/SearchInput";
 import useSearchNews from "./hooks/useSearchNews";
 import NewsCard from "../../components/NewsCard";
 import styled from "styled-components";
 import Loader from "../../components/Loader";
+import { useInView } from "react-intersection-observer";
+import { Doc } from "../../types/shared";
 const Home = () => {
-  const { data, setKeyword, keyword, fetchNextPage, isFetching, isLoading } =
-    useSearchNews();
-  const bottomRef = useRef<HTMLDivElement>(null);
+  const [keyword, setKeyword] = useState<string>("");
+  const [searchResults, setSearchResults] = useState<Doc[] | null>(null);
+  const { data, fetchNextPage, isFetching, isLoading } = useSearchNews(keyword);
+  const { ref, inView } = useInView();
+  useEffect(() => {
+    if (isLoading || !inView || !keyword) return;
+    fetchNextPage();
+  }, [isLoading, inView, fetchNextPage, keyword]);
 
   useEffect(() => {
-    if (isLoading) return;
-    const bottomWindow = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting && !!keyword) {
-          fetchNextPage();
-        }
-      },
-      { threshold: 0.7 }
-    );
-    if (bottomRef.current) bottomWindow.observe(bottomRef.current);
-  }, [keyword, fetchNextPage, isLoading]);
-  const searchResults = useMemo(() => {
-    const results = data?.pages.flatMap((page) => page.response.docs);
-    return results || null;
+    if (!data) return;
+    setSearchResults(data.pages.flatMap((page) => page.response.docs));
   }, [data]);
+  // useEffect(() => {
+  //   if (isLoading) return;
+  //   if (inView && !!keyword) fetchNextPage();
+  // }, [keyword, fetchNextPage, inView, isLoading]);
+
+  // const searchResults = useMemo(() => {
+  //   const results = data?.pages.flatMap((page) => page.response.docs);
+  //   return results || null;
+  // }, [data]);
 
   return (
     <Container>
@@ -36,7 +40,7 @@ const Home = () => {
           ))}
       </CardContainer>
       {isFetching ? <Loader /> : null}
-      <ContainerBottom ref={bottomRef} />
+      <ContainerBottom ref={ref} />
     </Container>
   );
 };
@@ -63,3 +67,15 @@ const ContainerBottom = styled.div`
   width: 100%;
   margin-top: 30px;
 `;
+// useEffect(() => {
+//   if (isLoading) return;
+//   const bottomWindow = new IntersectionObserver(
+//     (entries) => {
+//       if (entries[0].isIntersecting && !!keyword) {
+//         fetchNextPage();
+//       }
+//     },
+//     { threshold: 0.7 }
+//   );
+//   if (bottomRef.current) bottomWindow.observe(bottomRef.current);
+// }, [keyword, fetchNextPage, isLoading]);

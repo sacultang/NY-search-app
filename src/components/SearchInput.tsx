@@ -1,4 +1,4 @@
-import React, { FormEvent } from "react";
+import React, { FormEvent, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 
 interface IProps {
@@ -6,15 +6,20 @@ interface IProps {
 }
 
 const SearchInput = ({ setKeyword }: IProps) => {
+  const inputRef = useRef<HTMLInputElement>(null);
+  const [history, setHistory] = useState<string[]>([]);
   const searchNewsSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const searchKeyword = new FormData(e.currentTarget);
     setKeyword(searchKeyword.get("searchInput") as string);
+    setHistory((prev) => [...prev, searchKeyword.get("searchInput") as string]);
   };
-
+  useEffect(() => {
+    inputRef.current?.focus();
+  }, []);
   return (
     <InputForm onSubmit={searchNewsSubmit}>
-      <InputField type="text" name="searchInput" />
+      <InputField type="text" name="searchInput" ref={inputRef} />
       <SearchBtn>Search</SearchBtn>
     </InputForm>
   );
