@@ -4,7 +4,6 @@ import useSearchNews from "./hooks/useSearchNews";
 import NewsCard from "../../components/NewsCard";
 import styled from "styled-components";
 import Loader from "../../components/Loader";
-import Skeleton from "../../components/Skeleton";
 const Home = () => {
   const { data, setKeyword, keyword, fetchNextPage, isFetching, isLoading } =
     useSearchNews();
@@ -33,9 +32,7 @@ const Home = () => {
       <CardContainer>
         {searchResults &&
           searchResults.map((news) => (
-            <React.Fragment key={news._id}>
-              {isFetching ? <Skeleton /> : <NewsCard newsData={news} />}
-            </React.Fragment>
+            <NewsCard newsData={news} key={news._id} />
           ))}
       </CardContainer>
       {isFetching ? <Loader /> : null}

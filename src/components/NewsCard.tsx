@@ -1,11 +1,10 @@
 import React, { useCallback, useState } from "react";
 import { Doc } from "../types/shared";
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 import { setStoredClip } from "../util/storageUtils";
 import { checkClip, filterClip } from "../util/checkClip";
 import { useClip } from "../context/useClipContext";
 import defaultImg from "../assets/react.svg";
-import { ImgSkeleton } from "./Skeleton";
 interface IProps {
   newsData: Doc;
 }
@@ -13,7 +12,11 @@ const IMAGE_URL = "https://www.nytimes.com/";
 const NewsCard = ({ newsData }: IProps) => {
   const [loaded, setLoaded] = useState(false);
   const { clipNews, setClipNews } = useClip();
-  const onLoad = () => setLoaded(true);
+  const handleOnLoad = () => setLoaded(true);
+  const handleOnError = (e: React.SyntheticEvent<HTMLImageElement>) => {
+    const imgElement = e.target as HTMLImageElement;
+    imgElement.src = defaultImg;
+  };
   const addClip = useCallback(
     (news: Doc) => {
       let updatedClipNews: Doc[] = [];
@@ -22,16 +25,12 @@ const NewsCard = ({ newsData }: IProps) => {
       } else {
         updatedClipNews = [...clipNews, news];
       }
-
       setClipNews(updatedClipNews);
       setStoredClip(updatedClipNews);
     },
     [clipNews, setClipNews]
   );
-  const handleImgError = (e: React.SyntheticEvent<HTMLImageElement>) => {
-    const imgElement = e.target as HTMLImageElement;
-    imgElement.src = defaultImg;
-  };
+
   return (
     <CardBox>
       <h1>{newsData.headline.main}</h1>
@@ -48,8 +47,8 @@ const NewsCard = ({ newsData }: IProps) => {
               ? newsData.multimedia[0].crop_name
               : "Default Image"
           }
-          onLoad={onLoad}
-          onError={handleImgError}
+          onLoad={handleOnLoad}
+          onError={handleOnError}
         />
         {!loaded && <ImgSkeleton />}
       </ImgBox>
@@ -77,6 +76,7 @@ const ImgBox = styled.div`
   overflow: hidden;
   img {
     width: 100%;
+    height: 100%;
   }
 `;
 const ClipBox = styled.div`
@@ -91,4 +91,25 @@ const ClipBtn = styled.button`
   color: #fff;
   border-radius: 8px;
   padding: 10px 20px;
+`;
+
+const SkeletonAnimation = keyframes`
+      0% {
+        background-color: rgba(165, 165, 165, 0.1);
+        color: rgba(165, 165, 165, 0.1);
+    }
+    50% {
+        background-color: rgba(165, 165, 165, 0.3);
+        color: rgba(165, 165, 165, 0.1);
+    }
+    100% {
+        background-color: rgba(165, 165, 165, 0.1);
+        color: rgba(165, 165, 165, 0.1);
+    }
+    `;
+const ImgSkeleton = styled.div`
+  width: 100%;
+  height: 300px;
+  overflow: hidden;
+  animation: ${SkeletonAnimation} 1.8s infinite ease-in-out;
 `;
