@@ -1,15 +1,12 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
-
 import { Axios } from "../../../axiosInstance";
 import { Docs } from "../../../types/shared";
-
 const getSearchData = async (query: string, page: number): Promise<Docs> => {
   const { data } = await Axios({
     method: "get",
     params: {
       q: query,
-      page,
+      page: page,
       sort: "newest",
     },
   });
@@ -24,10 +21,11 @@ const useSearchNews = (keyword: string) => {
       ({ pageParam = 1 }) => getSearchData(keyword, pageParam),
       {
         getNextPageParam: (response, currentPages) => {
+          const currentPage = currentPages.length;
           const totalResults = response.response.meta.hits;
           const pageLength = Math.ceil(totalResults / 10);
-          if (currentPages.length < pageLength) {
-            return currentPages.length + 1;
+          if (currentPage <= pageLength) {
+            return currentPage + 1;
           } else {
             return undefined;
           }

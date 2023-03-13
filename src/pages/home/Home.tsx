@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import SearchInput from "../../components/SearchInput";
 import useSearchNews from "./hooks/useSearchNews";
 import NewsCard from "../../components/NewsCard";
@@ -20,15 +20,6 @@ const Home = () => {
     if (!data) return;
     setSearchResults(data.pages.flatMap((page) => page.response.docs));
   }, [data]);
-  // useEffect(() => {
-  //   if (isLoading) return;
-  //   if (inView && !!keyword) fetchNextPage();
-  // }, [keyword, fetchNextPage, inView, isLoading]);
-
-  // const searchResults = useMemo(() => {
-  //   const results = data?.pages.flatMap((page) => page.response.docs);
-  //   return results || null;
-  // }, [data]);
 
   return (
     <Container>
@@ -40,7 +31,7 @@ const Home = () => {
           ))}
       </CardContainer>
       {isFetching ? <Loader /> : null}
-      <ContainerBottom ref={ref} />
+      {isLoading ? null : <ContainerBottom ref={ref} />}
     </Container>
   );
 };

@@ -1,7 +1,7 @@
 export interface Docs {
   response: Response;
 }
-interface Response {
+export interface Response {
   docs: Doc[];
   meta: Meta;
 }
