@@ -20,12 +20,12 @@ const useSearchNews = (keyword: string) => {
       ["search", keyword],
       ({ pageParam = 1 }) => getSearchData(keyword, pageParam),
       {
-        getNextPageParam: (response, currentPages) => {
-          const currentPage = currentPages.length;
-          const totalResults = response.response.meta.hits;
+        getNextPageParam: (lastPage) => {
+          const currentPage = lastPage.response.meta.offset / 10 + 1;
+          const totalResults = lastPage.response.meta.hits;
           const pageLength = Math.ceil(totalResults / 10);
           if (currentPage <= pageLength) {
-            return currentPage + 1;
+            return currentPage;
           } else {
             return undefined;
           }

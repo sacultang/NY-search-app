@@ -74,9 +74,11 @@ const ImgBox = styled.div`
   width: 100%;
   height: 300px;
   overflow: hidden;
+  position: relative;
   img {
     width: 100%;
-    height: 100%;
+    position: absolute;
+    top: 0;
   }
 `;
 const ClipBox = styled.div`
