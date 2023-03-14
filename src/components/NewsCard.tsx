@@ -25,8 +25,10 @@ const NewsCard = ({ newsData }: IProps) => {
       } else {
         updatedClipNews = [...clipNews, news];
       }
-      setClipNews(updatedClipNews);
-      setStoredClip(updatedClipNews, LOCALSTORAGE_KEY.clip);
+      if (updatedClipNews) {
+        setClipNews(updatedClipNews);
+        setStoredClip(updatedClipNews, LOCALSTORAGE_KEY.clip);
+      }
     },
     [clipNews, setClipNews]
   );

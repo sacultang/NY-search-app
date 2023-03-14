@@ -1,6 +1,16 @@
-import React, { FormEvent, useEffect, useRef, useState } from "react";
+import React, {
+  FormEvent,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import styled from "styled-components";
-
+import {
+  getStoredHistory,
+  setStoredHistory,
+  LOCALSTORAGE_KEY,
+} from "../util/storageUtils";
 interface IProps {
   setKeyword: React.Dispatch<React.SetStateAction<string>>;
 }
@@ -8,14 +18,30 @@ interface IProps {
 const SearchInput = ({ setKeyword }: IProps) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const [history, setHistory] = useState<string[]>([]);
+  const storedHistory = getStoredHistory(LOCALSTORAGE_KEY.history);
+  const setHistoryFunc = useCallback(
+    (history: string[], newkeyword: string) => {
+      const updatedHistory = [...history, newkeyword].slice(-5);
+      setStoredHistory(updatedHistory, LOCALSTORAGE_KEY.history);
+      setHistory(updatedHistory);
+    },
+    []
+  );
   const searchNewsSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const searchKeyword = new FormData(e.currentTarget);
-    setKeyword(searchKeyword.get("searchInput") as string);
-    setHistory((prev) => [...prev, searchKeyword.get("searchInput") as string]);
+    const newKeyword = searchKeyword.get("searchInput") as string;
+    setKeyword(newKeyword);
+    if (history.indexOf(newKeyword) !== -1) {
+      const filteredHistory = history.filter((text) => text !== newKeyword);
+      setHistoryFunc(filteredHistory, newKeyword);
+    } else {
+      setHistoryFunc(history, newKeyword);
+    }
   };
   useEffect(() => {
     inputRef.current?.focus();
+    setHistory(storedHistory);
   }, []);
   return (
     <Container>

@@ -1,18 +1,21 @@
 import React, { useContext, createContext, useState, useEffect } from "react";
-import { getStoredClip, LOCALSTORAGE_KEY } from "../util/storageUtils";
-import { Doc } from "../types/shared";
+import {
+  getStoredClip,
+  LOCALSTORAGE_KEY,
+  StoredType,
+} from "../util/storageUtils";
 const storedClip = getStoredClip(LOCALSTORAGE_KEY.clip);
 
 const initialContext = {
   clipNews: storedClip,
-  setClipNews: (state: Doc[]) => {},
+  setClipNews: (state: StoredType) => {},
 };
 const UseClipContext = createContext(initialContext);
 
 export const useClip = () => useContext(UseClipContext);
 
 export function UseClipProvider({ children }: UseClipProviderType) {
-  const [clipNews, setClipNews] = useState<Doc[] | []>([]);
+  const [clipNews, setClipNews] = useState<StoredType>([]);
   const value: ValueType = {
     clipNews,
     setClipNews,
@@ -28,6 +31,6 @@ export function UseClipProvider({ children }: UseClipProviderType) {
 type UseClipProviderType = { children: React.ReactNode };
 
 interface ValueType {
-  clipNews: Doc[] | [];
-  setClipNews: React.Dispatch<React.SetStateAction<Doc[] | []>>;
+  clipNews: StoredType;
+  setClipNews: React.Dispatch<React.SetStateAction<StoredType>>;
 }
