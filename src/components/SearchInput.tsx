@@ -11,7 +11,7 @@ import {
   setStoredHistory,
   LOCALSTORAGE_KEY,
 } from "../util/storageUtils";
-import { TiDeleteOutline } from "react-icons/ti";
+import KeywordHistory from "./KeywordHistory";
 interface IProps {
   setKeyword: React.Dispatch<React.SetStateAction<string>>;
 }
@@ -40,12 +40,14 @@ const SearchInput = ({ setKeyword }: IProps) => {
       setHistoryFunc(history, newKeyword);
     }
   };
-  const keywordClickSearch = (item: string) => {
-    setKeyword(item);
-    if (inputRef.current) inputRef.current.value = item;
+  const keywordClickSearch = (keyword: string) => {
+    setKeyword(keyword);
+    if (inputRef.current) inputRef.current.value = keyword;
   };
   const removeKeyword = (keyword: string) => {
-    const filteredHistory = history.filter((text) => text !== keyword);
+    const filteredHistory = history.filter(
+      (storedKeyword) => storedKeyword !== keyword
+    );
     setStoredHistory(filteredHistory, LOCALSTORAGE_KEY.history);
     setHistory(filteredHistory);
   };
@@ -59,19 +61,11 @@ const SearchInput = ({ setKeyword }: IProps) => {
         <InputField type="text" name="searchInput" ref={inputRef} />
         <SearchBtn>Search</SearchBtn>
       </InputForm>
-      <HistoryBox>
-        최근 검색어
-        <HistoryUl>
-          {history.map((item, i) => (
-            <HistoryLi key={i}>
-              <p onClick={() => keywordClickSearch(item)}>{item}</p>
-              <div onClick={() => removeKeyword(item)}>
-                <TiDeleteOutline size={20} />
-              </div>
-            </HistoryLi>
-          ))}
-        </HistoryUl>
-      </HistoryBox>
+      <KeywordHistory
+        history={history}
+        keywordClickSearch={keywordClickSearch}
+        removeKeyword={removeKeyword}
+      />
     </Container>
   );
 };
@@ -104,57 +98,5 @@ const SearchBtn = styled.button`
   transition: all 0.3s;
   &:hover {
     background-color: #5a7de6;
-  }
-`;
-const HistoryBox = styled.div`
-  width: 100%;
-  height: 60px;
-  margin-top: 10px;
-  overflow: hidden;
-  border-radius: 10px;
-  background-color: #dfdfdf65;
-  min-width: 500px;
-  padding: 0 10px;
-  display: flex;
-  align-content: center;
-  align-items: center;
-`;
-const HistoryUl = styled.ul`
-  margin: 0 10px;
-  padding: 0;
-  display: flex;
-  height: 40px;
-`;
-const HistoryLi = styled.li`
-  list-style: none;
-  border-radius: 4px;
-  color: #fff;
-  margin-right: 3px;
-  overflow: hidden;
-  cursor: pointer;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  p {
-    padding: 0 10px;
-    height: 100%;
-    background-color: royalblue;
-    display: flex;
-    align-items: center;
-    transition: all 0.3s;
-    &:hover {
-      background-color: #5a7de6;
-    }
-  }
-  div {
-    height: 100%;
-    display: flex;
-    align-items: center;
-    padding: 10px;
-    background-color: #5a7de6;
-    transition: all 0.3s;
-    &:hover {
-      background-color: #7391eb;
-    }
   }
 `;
