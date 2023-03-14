@@ -11,6 +11,7 @@ import {
   setStoredHistory,
   LOCALSTORAGE_KEY,
 } from "../util/storageUtils";
+import { TiDeleteOutline } from "react-icons/ti";
 interface IProps {
   setKeyword: React.Dispatch<React.SetStateAction<string>>;
 }
@@ -39,6 +40,15 @@ const SearchInput = ({ setKeyword }: IProps) => {
       setHistoryFunc(history, newKeyword);
     }
   };
+  const keywordClickSearch = (item: string) => {
+    setKeyword(item);
+    if (inputRef.current) inputRef.current.value = item;
+  };
+  const removeKeyword = (keyword: string) => {
+    const filteredHistory = history.filter((text) => text !== keyword);
+    setStoredHistory(filteredHistory, LOCALSTORAGE_KEY.history);
+    setHistory(filteredHistory);
+  };
   useEffect(() => {
     inputRef.current?.focus();
     setHistory(storedHistory);
@@ -53,7 +63,12 @@ const SearchInput = ({ setKeyword }: IProps) => {
         최근 검색어
         <HistoryUl>
           {history.map((item, i) => (
-            <HistoryLi key={i}> {item} </HistoryLi>
+            <HistoryLi key={i}>
+              <p onClick={() => keywordClickSearch(item)}>{item}</p>
+              <div onClick={() => removeKeyword(item)}>
+                <TiDeleteOutline size={20} />
+              </div>
+            </HistoryLi>
           ))}
         </HistoryUl>
       </HistoryBox>
@@ -108,13 +123,38 @@ const HistoryUl = styled.ul`
   margin: 0 10px;
   padding: 0;
   display: flex;
+  height: 40px;
 `;
 const HistoryLi = styled.li`
-  width: 100%;
   list-style: none;
-  padding: 10px;
-  background-color: royalblue;
   border-radius: 4px;
   color: #fff;
-  margin-right: 3px; ;
+  margin-right: 3px;
+  overflow: hidden;
+  cursor: pointer;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  p {
+    padding: 0 10px;
+    height: 100%;
+    background-color: royalblue;
+    display: flex;
+    align-items: center;
+    transition: all 0.3s;
+    &:hover {
+      background-color: #5a7de6;
+    }
+  }
+  div {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    background-color: #5a7de6;
+    transition: all 0.3s;
+    &:hover {
+      background-color: #7391eb;
+    }
+  }
 `;
