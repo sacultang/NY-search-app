@@ -1,7 +1,7 @@
 import React, { useContext, createContext, useState, useEffect } from "react";
-import { getStoredClip } from "../util/storageUtils";
+import { getStoredClip, LOCALSTORAGE_KEY } from "../util/storageUtils";
 import { Doc } from "../types/shared";
-const storedClip = getStoredClip();
+const storedClip = getStoredClip(LOCALSTORAGE_KEY.clip);
 
 const initialContext = {
   clipNews: storedClip,

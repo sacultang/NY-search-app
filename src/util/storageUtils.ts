@@ -1,11 +1,13 @@
 import { Doc } from "../types/shared";
-const LOCALSTORAGE_KEY = "clip_news";
-export type newsArr = Doc[] | [];
+export const LOCALSTORAGE_KEY = {
+  clip: "clip_news",
+  history: "history",
+};
 
-export const getStoredClip = (): Doc[] | [] => {
-  const storedClip = localStorage.getItem(LOCALSTORAGE_KEY);
+export const getStoredClip = (key: string): Doc[] | [] => {
+  const storedClip = localStorage.getItem(key);
   return storedClip ? JSON.parse(storedClip) : [];
 };
-export const setStoredClip = (news: Doc[]) => {
-  localStorage.setItem(LOCALSTORAGE_KEY, JSON.stringify(news));
+export const setStoredClip = (item: Doc[] | [], key: string) => {
+  localStorage.setItem(key, JSON.stringify(item));
 };

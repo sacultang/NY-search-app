@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from "react";
 import { Doc } from "../types/shared";
 import styled, { keyframes } from "styled-components";
-import { setStoredClip } from "../util/storageUtils";
+import { setStoredClip, LOCALSTORAGE_KEY } from "../util/storageUtils";
 import { checkClip, filterClip } from "../util/checkClip";
 import { useClip } from "../context/useClipContext";
 import defaultImg from "../assets/react.svg";
@@ -26,7 +26,7 @@ const NewsCard = ({ newsData }: IProps) => {
         updatedClipNews = [...clipNews, news];
       }
       setClipNews(updatedClipNews);
-      setStoredClip(updatedClipNews);
+      setStoredClip(updatedClipNews, LOCALSTORAGE_KEY.clip);
     },
     [clipNews, setClipNews]
   );
