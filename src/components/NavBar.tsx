@@ -26,9 +26,19 @@ const LinkBtn = styled(NavLink)`
   background-color: #cecece;
   margin: 5px;
   border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.3s;
   &.active {
     color: #fff;
     background-color: royalblue;
+    &:hover {
+      color: #fff;
+      background-color: #5a7de6;
+    }
+  }
+  &:hover {
+    background-color: #bbbbbb;
+    color: #616161;
   }
 `;
 const Title = styled.h1``;

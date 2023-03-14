@@ -36,20 +36,17 @@ const NewsCard = ({ newsData }: IProps) => {
       <h1>{newsData.headline.main}</h1>
       <p>{newsData.abstract}</p>
       <ImgBox>
-        <img
-          src={
-            newsData.multimedia.length > 0
-              ? IMAGE_URL + newsData.multimedia[0].url
-              : defaultImg
-          }
-          alt={
-            newsData.multimedia.length > 0
-              ? newsData.multimedia[0].crop_name
-              : "Default Image"
-          }
-          onLoad={handleOnLoad}
-          onError={handleOnError}
-        />
+        {newsData.multimedia.length > 0 ? (
+          <img
+            src={IMAGE_URL + newsData.multimedia[0].url}
+            alt={newsData.multimedia[0].crop_name}
+            onLoad={handleOnLoad}
+            onError={handleOnError}
+          />
+        ) : (
+          <img src={defaultImg} alt="default" />
+        )}
+
         {!loaded && <ImgSkeleton />}
       </ImgBox>
       <ClipBox>
@@ -93,6 +90,11 @@ const ClipBtn = styled.button`
   color: #fff;
   border-radius: 8px;
   padding: 10px 20px;
+  cursor: pointer;
+  transition: all 0.3s;
+  &:hover {
+    background-color: #5a7de6;
+  }
 `;
 
 const SkeletonAnimation = keyframes`
