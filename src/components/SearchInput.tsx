@@ -28,14 +28,16 @@ const SearchInput = ({ setKeyword }: IProps) => {
     },
     []
   );
+  const filterHistory = (history: string[], keyword: string) => {
+    return history.filter((text) => text !== keyword);
+  };
   const searchNewsSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const searchKeyword = new FormData(e.currentTarget);
     const newKeyword = searchKeyword.get("searchInput") as string;
     setKeyword(newKeyword);
     if (history.indexOf(newKeyword) !== -1) {
-      const filteredHistory = history.filter((text) => text !== newKeyword);
-      setHistoryFunc(filteredHistory, newKeyword);
+      setHistoryFunc(filterHistory(history, newKeyword), newKeyword);
     } else {
       setHistoryFunc(history, newKeyword);
     }
@@ -45,11 +47,9 @@ const SearchInput = ({ setKeyword }: IProps) => {
     if (inputRef.current) inputRef.current.value = keyword;
   };
   const removeKeyword = (keyword: string) => {
-    const filteredHistory = history.filter(
-      (storedKeyword) => storedKeyword !== keyword
-    );
-    setStoredHistory(filteredHistory, LOCALSTORAGE_KEY.history);
-    setHistory(filteredHistory);
+    filterHistory(history, keyword);
+    setStoredHistory(filterHistory(history, keyword), LOCALSTORAGE_KEY.history);
+    setHistory(filterHistory(history, keyword));
   };
   useEffect(() => {
     inputRef.current?.focus();
